@@ -92,6 +92,13 @@ Container(
   child: Text('Responsive Container'),
 )
 ```
+
+## 🔐 Authentication
+
+The project uses [Supabase](https://supabase.com) for user authentication.
+Before running the app, set `SUPABASE_URL` and `SUPABASE_ANON_KEY` in the `.env`
+file. Use `AuthService` to sign up, sign in, and sign out users via Supabase.
+
 ## 📦 Deployment
 
 Build the application for production:
