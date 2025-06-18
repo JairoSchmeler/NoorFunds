@@ -188,7 +188,7 @@ class _SettingsProfileState extends State<SettingsProfile> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('About DonationScan'),
+        title: Text('About Noor Funds'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -199,7 +199,7 @@ class _SettingsProfileState extends State<SettingsProfile> {
             ),
             SizedBox(height: 16),
             Text(
-              'DonationScan',
+              'Noor Funds',
               style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -215,7 +215,7 @@ class _SettingsProfileState extends State<SettingsProfile> {
             ),
             SizedBox(height: 16),
             Text(
-              '© 2023 DonationScan',
+              '© 2023 Noor Funds',
               style: GoogleFonts.inter(
                 fontSize: 12,
                 color: Colors.grey,
@@ -356,7 +356,7 @@ class _SettingsProfileState extends State<SettingsProfile> {
               children: [
                 SettingsOptionItemWidget(
                   title: 'App Version',
-                  subtitle: 'DonationScan v1.0.0',
+                  subtitle: 'Noor Funds v1.0.0',
                   onTap: _showAboutDialog,
                   leadingIcon: 'info',
                 ),
