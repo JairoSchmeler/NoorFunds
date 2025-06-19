@@ -17,5 +17,6 @@ class AuthService {
       'email': box.get(_keyEmail) as String?,
       'password': box.get(_keyPassword) as String?,
     };
+
   }
 }
