@@ -57,12 +57,14 @@ class _SplashScreenState extends State<SplashScreen>
     // or making API calls to validate user session
     Timer(const Duration(milliseconds: 2500), () {
       bool isFirstTimeUser = true; // This would be determined from storage
+      bool isLoggedIn = false; // Replace with real auth check
 
-      // Navigate to appropriate screen based on user status
       if (isFirstTimeUser) {
         Navigator.pushReplacementNamed(context, '/onboarding-flow');
-      } else {
+      } else if (isLoggedIn) {
         Navigator.pushReplacementNamed(context, '/dashboard-home');
+      } else {
+        Navigator.pushReplacementNamed(context, '/login');
       }
     });
   }
@@ -124,7 +126,7 @@ class _SplashScreenState extends State<SplashScreen>
 
               // App name in Arabic style
               Text(
-                'DonationScan',
+                'Noor Funds',
                 style: GoogleFonts.inter(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,

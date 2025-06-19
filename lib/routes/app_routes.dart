@@ -8,11 +8,15 @@ import '../presentation/export_analytics/export_analytics.dart';
 import '../presentation/splash_screen/splash_screen.dart';
 import '../presentation/onboarding_flow/onboarding_flow.dart';
 import '../presentation/settings_profile/settings_profile.dart';
+import '../presentation/auth/login_screen.dart';
+import '../presentation/auth/sign_up_screen.dart';
 
 class AppRoutes {
   static const String initial = '/splash-screen';
   static const String splashScreen = '/splash-screen';
   static const String onboardingFlow = '/onboarding-flow';
+  static const String login = '/login';
+  static const String signUp = '/sign-up';
   static const String dashboardHome = '/dashboard-home';
   static const String ocrCameraScan = '/ocr-camera-scan';
   static const String ocrResultsVerification = '/ocr-results-verification';
@@ -25,6 +29,8 @@ class AppRoutes {
     initial: (context) => const SplashScreen(),
     splashScreen: (context) => const SplashScreen(),
     onboardingFlow: (context) => const OnboardingFlow(),
+    login: (context) => const LoginScreen(),
+    signUp: (context) => const SignUpScreen(),
     dashboardHome: (context) => const DashboardHome(),
     ocrCameraScan: (context) => const OcrCameraScan(),
     ocrResultsVerification: (context) => const OcrResultsVerification(),
