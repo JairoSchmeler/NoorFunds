@@ -148,7 +148,7 @@ class _DashboardHomeState extends State<DashboardHome>
         Navigator.pushNamed(context, '/export-analytics');
         break;
       case 4:
-        // Settings - placeholder
+        Navigator.pushNamed(context, '/settings-profile');
         break;
     }
   }
