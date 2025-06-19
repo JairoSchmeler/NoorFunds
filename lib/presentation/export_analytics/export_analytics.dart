@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/app_export.dart';
+import '../../services/export_service.dart';
+import '../../services/receipt_repository.dart';
 import './widgets/analytics_chart_widget.dart';
 import './widgets/export_preview_widget.dart';
 import './widgets/filter_chip_widget.dart';
@@ -26,6 +28,7 @@ class _ExportAnalyticsState extends State<ExportAnalytics>
   RangeValues _amountRange = const RangeValues(0, 10000);
   final List<String> _selectedCategories = [];
   bool _isFilterExpanded = false;
+  final ExportService _exportService = ExportService();
 
   // Mock data
   final List<Map<String, dynamic>> _mockDonationData = [
@@ -538,6 +541,36 @@ class _ExportAnalyticsState extends State<ExportAnalytics>
             ),
           ),
         ),
+        SizedBox(height: 2.h),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: _isExporting ? null : _downloadCsv,
+            icon: _isExporting
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : CustomIconWidget(
+                    iconName: 'file_download',
+                    color: Colors.white,
+                    size: 20,
+                  ),
+            label: const Text('Download Donations'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2E7D32),
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 2.h),
+              textStyle: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -681,6 +714,25 @@ class _ExportAnalyticsState extends State<ExportAnalytics>
           ),
         ),
       );
+    }
+  }
+
+  void _downloadCsv() async {
+    setState(() => _isExporting = true);
+    try {
+      final file = await _exportService
+          .exportReceiptsToCsv(ReceiptRepository.instance.receipts);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('CSV saved to ${file.path}'),
+          backgroundColor: const Color(0xFF2E7D32),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isExporting = false);
+      }
     }
   }
 }
