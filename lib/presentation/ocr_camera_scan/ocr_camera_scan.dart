@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 
 import '../../core/app_export.dart';
 import './widgets/camera_overlay_widget.dart';
@@ -153,8 +154,12 @@ class _OcrCameraScanState extends State<OcrCameraScan>
     );
   }
 
-  void _saveDonationRecord(Map<String, dynamic> donationData) {
-    // Mock save functionality
+  Future<void> _saveDonationRecord(Map<String, dynamic> donationData) async {
+    if (_capturedImage != null) {
+      final path = await LocalStorageService.saveImage(File(_capturedImage!.path));
+      donationData['imagePath'] = path;
+    }
+    await DatabaseService.donationsBox.add(donationData);
     Navigator.of(context).pop(); // Close bottom sheet
     Navigator.of(context).pop(); // Return to previous screen
 

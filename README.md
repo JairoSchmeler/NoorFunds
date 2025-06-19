@@ -92,6 +92,18 @@ Container(
   child: Text('Responsive Container'),
 )
 ```
+
+## 🔐 Local Storage
+
+Scanned images are stored on the device using `path_provider`. Files are placed
+in the application's documents directory under `scans/` to keep sensitive data
+offline.
+
+## 🗄️ Local Database
+
+Authentication details and donation records are persisted locally with Hive.
+Hive boxes are initialized in `main.dart` and accessed through
+`DatabaseService` and `AuthService`.
 ## 📦 Deployment
 
 Build the application for production:
