@@ -1,8 +1,12 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 
 import '../../core/app_export.dart';
+import '../../services/ocr_service.dart';
+import '../../services/receipt_parser.dart';
+import '../../services/receipt_repository.dart';
 import './widgets/camera_overlay_widget.dart';
 import './widgets/capture_controls_widget.dart';
 import './widgets/ocr_results_bottom_sheet.dart';
@@ -27,16 +31,9 @@ class _OcrCameraScanState extends State<OcrCameraScan>
   XFile? _lastCapturedImage;
   late AnimationController _pulseAnimationController;
   late Animation<double> _pulseAnimation;
+  final OcrService _ocrService = OcrService();
 
-  // Mock OCR results
-  final Map<String, dynamic> _mockOcrResults = {
-    "donorName": "Ahmed Al-Rashid",
-    "amount": "500.00",
-    "currency": "SAR",
-    "date": "2024-01-15",
-    "category": "Zakat",
-    "notes": "Monthly donation for mosque maintenance"
-  };
+  ParsedReceipt? _lastParsedReceipt;
 
   @override
   void initState() {
@@ -121,14 +118,16 @@ class _OcrCameraScanState extends State<OcrCameraScan>
           _isProcessing = true;
         });
 
-        // Simulate OCR processing
-        await Future.delayed(const Duration(seconds: 3));
+        final rawText = await _ocrService.extractRawText(image);
+        final parsed = ReceiptParser.parseReceipt(rawText);
+        ReceiptRepository.instance.add(parsed);
 
         if (mounted) {
           setState(() {
             _isProcessing = false;
+            _lastParsedReceipt = parsed;
           });
-          _showOcrResults();
+          _showOcrResults(parsed);
         }
       } catch (e) {
         debugPrint('Error capturing image: $e');
@@ -139,13 +138,20 @@ class _OcrCameraScanState extends State<OcrCameraScan>
     }
   }
 
-  void _showOcrResults() {
+  void _showOcrResults(ParsedReceipt parsed) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => OcrResultsBottomSheet(
-        ocrResults: _mockOcrResults,
+        ocrResults: {
+          'donorName': parsed.donorName,
+          'amount': parsed.amount.toStringAsFixed(2),
+          'currency': 'USD',
+          'date': parsed.date.toIso8601String(),
+          'category': parsed.donationType,
+          'notes': parsed.purpose ?? ''
+        },
         capturedImage: _capturedImage,
         onSave: _saveDonationRecord,
         onRetake: _retakeImage,
@@ -153,8 +159,12 @@ class _OcrCameraScanState extends State<OcrCameraScan>
     );
   }
 
-  void _saveDonationRecord(Map<String, dynamic> donationData) {
-    // Mock save functionality
+  Future<void> _saveDonationRecord(Map<String, dynamic> donationData) async {
+    if (_capturedImage != null) {
+      final path = await LocalStorageService.saveImage(File(_capturedImage!.path));
+      donationData['imagePath'] = path;
+    }
+    await DatabaseService.donationsBox.add(donationData);
     Navigator.of(context).pop(); // Close bottom sheet
     Navigator.of(context).pop(); // Return to previous screen
 
@@ -196,6 +206,7 @@ class _OcrCameraScanState extends State<OcrCameraScan>
   void dispose() {
     _cameraController?.dispose();
     _pulseAnimationController.dispose();
+    _ocrService.dispose();
     super.dispose();
   }
 

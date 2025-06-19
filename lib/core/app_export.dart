@@ -4,3 +4,6 @@ export 'package:flutter_template/widgets/custom_icon_widget.dart';
 export 'package:flutter_template/widgets/custom_image_widget.dart';
 export 'package:flutter_template/theme/app_theme.dart';
 export 'package:flutter_template/core/extensions/color_extensions.dart';
+export 'package:flutter_template/core/services/local_storage_service.dart';
+export 'package:flutter_template/core/services/database_service.dart';
+export 'package:flutter_template/core/services/auth_service.dart';
