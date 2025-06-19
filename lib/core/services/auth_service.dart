@@ -1,33 +1,22 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'database_service.dart';
 
-/// Service responsible for authenticating users using Supabase.
 class AuthService {
-  final SupabaseClient _client = Supabase.instance.client;
+  static const _keyEmail = 'email';
+  static const _keyPassword = 'password';
 
-  /// Creates a new user using [email] and [password].
-  Future<AuthResponse> signUp({
-    required String email,
-    required String password,
-  }) async {
-    return await _client.auth.signUp(
-      email: email,
-      password: password,
-    );
+  static Future<void> saveCredentials(String email, String password) async {
+    final box = DatabaseService.authBox;
+    await box.put(_keyEmail, email);
+    await box.put(_keyPassword, password);
   }
 
-  /// Logs in a user using [email] and [password].
-  Future<AuthResponse> signIn({
-    required String email,
-    required String password,
-  }) async {
-    return await _client.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
-  }
+  static Map<String, String?> getCredentials() {
+    final box = DatabaseService.authBox;
+    return {
+      'email': box.get(_keyEmail) as String?,
+      'password': box.get(_keyPassword) as String?,
+    };
 
-  /// Signs out the currently authenticated user.
-  Future<void> signOut() async {
-    await _client.auth.signOut();
   }
 }

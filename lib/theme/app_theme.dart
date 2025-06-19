@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../core/extensions/color_extensions.dart';
+
 /// A class that contains all theme configurations for the application.
 class AppTheme {
   AppTheme._();

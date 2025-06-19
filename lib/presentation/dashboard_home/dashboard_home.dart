@@ -148,7 +148,7 @@ class _DashboardHomeState extends State<DashboardHome>
         Navigator.pushNamed(context, '/export-analytics');
         break;
       case 4:
-        // Settings - placeholder
+        Navigator.pushNamed(context, '/settings-profile');
         break;
     }
   }
@@ -325,7 +325,7 @@ class _DashboardHomeState extends State<DashboardHome>
             children: [
               Expanded(
                 child: Text(
-                  'السلام عليكم\nWelcome to DonationScan',
+                  'السلام عليكم\nWelcome to Noor Funds',
                   style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

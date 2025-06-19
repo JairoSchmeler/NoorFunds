@@ -16,7 +16,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
 
   final List<Map<String, dynamic>> _onboardingData = [
     {
-      'title': 'Welcome to DonationScan',
+      'title': 'Welcome to Noor Funds',
       'description':
           'Your complete Islamic donation management solution for organizing and tracking all charitable contributions with ease.',
       'icon': 'mosque',
@@ -85,12 +85,12 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
     // using a package like permission_handler
 
     // After permissions are granted, navigate to the dashboard
-    Navigator.pushReplacementNamed(context, '/dashboard-home');
+    Navigator.pushReplacementNamed(context, '/login');
 
     // Show a welcome toast
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Welcome to DonationScan!'),
+        content: Text('Welcome to Noor Funds!'),
         duration: Duration(seconds: 2),
         backgroundColor: Color(0xFF2E7D32),
       ),
