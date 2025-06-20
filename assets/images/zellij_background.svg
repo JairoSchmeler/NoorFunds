@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <defs>
+    <pattern id="star" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#e2e2e2"/>
+      <polygon points="20,0 24,16 40,20 24,24 20,40 16,24 0,20 16,16" fill="#4CAF50"/>
+    </pattern>
+  </defs>
+  <rect width="200" height="200" fill="url(#star)"/>
+</svg>
