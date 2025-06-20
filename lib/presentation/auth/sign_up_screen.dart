@@ -24,8 +24,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  void _signUp() {
-    Navigator.pushReplacementNamed(context, '/dashboard-home');
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirm = _confirmController.text;
+    if (password != confirm) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+    final success = await AuthService.signUp(email, password);
+    if (success) {
+      Navigator.pushReplacementNamed(context, '/dashboard-home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to create account')),
+      );
+    }
   }
 
   void _goToLogin() {

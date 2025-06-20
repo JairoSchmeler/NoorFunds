@@ -11,6 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await DatabaseService.init();
+  await SqliteService.init();
 
   ErrorWidget.builder = (FlutterErrorDetails details) {
     return CustomErrorWidget(

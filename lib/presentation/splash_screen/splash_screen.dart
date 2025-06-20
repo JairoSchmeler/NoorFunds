@@ -52,12 +52,15 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _checkUserStatus() async {
-    // Simulate checking authentication status, loading app data, etc.
-    // This would typically involve checking SharedPreferences, a secure storage,
-    // or making API calls to validate user session
-    Timer(const Duration(milliseconds: 2500), () {
+    Timer(const Duration(milliseconds: 2500), () async {
       bool isFirstTimeUser = true; // This would be determined from storage
-      bool isLoggedIn = false; // Replace with real auth check
+      final creds = AuthService.getCredentials();
+      bool isLoggedIn = false;
+      if (creds['email'] != null && creds['password'] != null) {
+        final user = await SqliteService.getUser(
+            creds['email']!, creds['password']!);
+        isLoggedIn = user != null;
+      }
 
       if (isFirstTimeUser) {
         Navigator.pushReplacementNamed(context, '/onboarding-flow');
