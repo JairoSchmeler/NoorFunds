@@ -22,8 +22,17 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() {
-    Navigator.pushReplacementNamed(context, '/dashboard-home');
+  Future<void> _login() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final success = await AuthService.login(email, password);
+    if (success) {
+      Navigator.pushReplacementNamed(context, '/dashboard-home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid credentials')),
+      );
+    }
   }
 
   void _goToSignUp() {

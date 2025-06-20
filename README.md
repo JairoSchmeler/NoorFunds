@@ -102,9 +102,31 @@ offline.
 
 ## 🗄️ Local Database
 
-Authentication details and donation records are persisted locally with Hive.
-Hive boxes are initialized in `main.dart` and accessed through
-`DatabaseService` and `AuthService`.
+User accounts and donation records are persisted locally using SQLite via the
+`sqflite` package. The database is initialized in `main.dart` through
+`SqliteService.init()`.
+
+### ER Schema
+
+```
+users
+-----
+id INTEGER PRIMARY KEY AUTOINCREMENT
+email TEXT UNIQUE NOT NULL
+password TEXT NOT NULL
+
+donations
+---------
+id INTEGER PRIMARY KEY AUTOINCREMENT
+user_id INTEGER NOT NULL REFERENCES users(id)
+donor_name TEXT
+amount REAL
+date TEXT
+notes TEXT
+```
+
+Each donation record references the user that created it through the `user_id`
+foreign key.
 
 ## 📦 Deployment
 
