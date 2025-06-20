@@ -7,6 +7,7 @@ import '../../core/app_export.dart';
 import '../../services/ocr_service.dart';
 import '../../services/receipt_parser.dart';
 import '../../services/receipt_repository.dart';
+import '../../models/parsed_receipt.dart';
 import './widgets/camera_overlay_widget.dart';
 import './widgets/capture_controls_widget.dart';
 import './widgets/ocr_results_bottom_sheet.dart';

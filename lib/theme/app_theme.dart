@@ -95,7 +95,7 @@ class AppTheme {
       foregroundColor: onPrimaryLight,
       elevation: 4.0,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: cardLight,
       elevation: 2.0,
       shape: RoundedRectangleBorder(
@@ -207,7 +207,7 @@ class AppTheme {
       overlayColor: primaryLight.withValues(alpha: 0.2),
       inactiveTrackColor: primaryLight.withValues(alpha: 0.3),
     ),
-    tabBarTheme: const TabBarTheme(
+    tabBarTheme: const TabBarThemeData(
       labelColor: onPrimaryLight,
       unselectedLabelColor: onPrimaryLight,
       indicatorColor: onPrimaryLight,
@@ -269,7 +269,7 @@ class AppTheme {
       foregroundColor: onSurfaceDark,
       elevation: 4.0,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: cardDark,
       elevation: 2.0,
       shape: RoundedRectangleBorder(
@@ -381,7 +381,7 @@ class AppTheme {
       overlayColor: primaryDark.withValues(alpha: 0.2),
       inactiveTrackColor: primaryDark.withValues(alpha: 0.3),
     ),
-    tabBarTheme: const TabBarTheme(
+    tabBarTheme: const TabBarThemeData(
       labelColor: onSurfaceDark,
       unselectedLabelColor: textMediumEmphasisDark,
       indicatorColor: primaryDark,
