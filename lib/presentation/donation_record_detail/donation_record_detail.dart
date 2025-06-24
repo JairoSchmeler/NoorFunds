@@ -21,38 +21,21 @@ class _DonationRecordDetailState extends State<DonationRecordDetail> {
   late TextEditingController notesController;
   late TextEditingController receiptNumberController;
 
-  // Mock donation data
-  final Map<String, dynamic> donationData = {
-    "id": "DON-2024-001",
-    "donorName": "أحمد محمد الخالدي",
-    "donorNameEn": "Ahmed Mohammed Al-Khalidi",
-    "amount": 500.0,
-    "currency": "SAR",
-    "date": "2024-01-15",
-    "hijriDate": "1445-07-04",
-    "category": "زكاة",
-    "categoryEn": "Zakat",
-    "receiptNumber": "RCP-2024-001",
-    "notes": "تبرع شهري منتظم للمسجد",
-    "notesEn": "Regular monthly donation for mosque",
-    "documentImage":
-        "https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    "createdAt": "2024-01-15T10:30:00Z",
-    "lastModified": "2024-01-15T10:30:00Z",
-    "organizationName": "مسجد النور الإسلامي",
-    "organizationNameEn": "Al-Noor Islamic Mosque"
-  };
+  late Map<String, dynamic> donationData;
 
   @override
   void initState() {
     super.initState();
-    donorNameController =
-        TextEditingController(text: donationData["donorNameEn"]);
-    amountController =
-        TextEditingController(text: donationData["amount"].toString());
-    notesController = TextEditingController(text: donationData["notesEn"]);
-    receiptNumberController =
-        TextEditingController(text: donationData["receiptNumber"]);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    donationData = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    donorNameController = TextEditingController(text: donationData['donorName'] ?? '');
+    amountController = TextEditingController(text: donationData['amount']?.toString() ?? '');
+    notesController = TextEditingController(text: donationData['notes'] ?? '');
+    receiptNumberController = TextEditingController(text: donationData['receiptNumber'] ?? '');
   }
 
   @override
@@ -109,7 +92,7 @@ class _DonationRecordDetailState extends State<DonationRecordDetail> {
             children: [
               Text('Are you sure you want to delete this donation record?'),
               SizedBox(height: 16),
-              Text('Donor: ${donationData["donorNameEn"]}'),
+              Text('Donor: ${donationData["donorName"] ?? ''}'),
               Text(
                   'Amount: ${donationData["currency"]} ${donationData["amount"]}'),
               Text('Date: ${donationData["date"]}'),
@@ -345,9 +328,10 @@ class _DonationRecordDetailState extends State<DonationRecordDetail> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Document Image
-              DocumentImageWidget(
-                imageUrl: donationData["documentImage"],
-              ),
+              if (donationData["documentImage"] != null)
+                DocumentImageWidget(
+                  imageUrl: donationData["documentImage"],
+                ),
 
               SizedBox(height: 24),
 

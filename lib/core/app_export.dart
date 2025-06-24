@@ -10,4 +10,5 @@ export 'package:noor_funds/core/services/local_storage_service.dart';
 export 'package:noor_funds/core/services/database_service.dart';
 export 'package:noor_funds/core/services/auth_service.dart';
 export 'package:noor_funds/core/services/sqlite_service.dart';
+export 'package:noor_funds/core/services/donation_service.dart';
 

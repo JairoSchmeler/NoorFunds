@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 class SqliteService {
   static Database? _db;
   static const _dbName = 'noor_funds.db';
-  static const _dbVersion = 1;
+  static const _dbVersion = 2;
 
   static Future<void> init() async {
     final dbPath = await getDatabasesPath();
@@ -13,6 +13,7 @@ class SqliteService {
       path,
       version: _dbVersion,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -30,11 +31,23 @@ class SqliteService {
         user_id INTEGER NOT NULL,
         donor_name TEXT,
         amount REAL,
+        currency TEXT,
         date TEXT,
+        category TEXT,
         notes TEXT,
+        image_path TEXT,
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
+  }
+
+  static Future<void> _onUpgrade(
+      Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute("ALTER TABLE donations ADD COLUMN currency TEXT");
+      await db.execute("ALTER TABLE donations ADD COLUMN category TEXT");
+      await db.execute("ALTER TABLE donations ADD COLUMN image_path TEXT");
+    }
   }
 
   static Database get _database => _db!;
@@ -61,6 +74,10 @@ class SqliteService {
 
   static Future<int> addDonation(Map<String, dynamic> donation) async {
     return await _database.insert('donations', donation);
+  }
+
+  static Future<int> deleteDonation(int id) async {
+    return await _database.delete('donations', where: 'id = ?', whereArgs: [id]);
   }
 
   static Future<List<Map<String, dynamic>>> getUserDonations(int userId) async {
