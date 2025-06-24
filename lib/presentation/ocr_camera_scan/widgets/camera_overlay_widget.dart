@@ -5,17 +5,19 @@ import '../../../core/app_export.dart';
 class CameraOverlayWidget extends StatelessWidget {
   final bool isDocumentDetected;
   final Animation<double> pulseAnimation;
+  final Animation<double> scanAnimation;
 
   const CameraOverlayWidget({
     super.key,
     required this.isDocumentDetected,
     required this.pulseAnimation,
+    required this.scanAnimation,
   });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: pulseAnimation,
+      animation: Listenable.merge([pulseAnimation, scanAnimation]),
       builder: (context, child) {
         return Container(
           color: Colors.black.withValues(alpha: 0.3),
@@ -131,6 +133,18 @@ class CameraOverlayWidget extends StatelessWidget {
                             ),
                           ),
                         ),
+
+                      // Scanning line animation
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment(0, scanAnimation.value),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            height: 2,
+                            color: const Color(0xFFFFD700),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

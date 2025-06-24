@@ -8,6 +8,7 @@ import '../../services/ocr_service.dart';
 import '../../services/receipt_parser.dart';
 import '../../services/receipt_repository.dart';
 import '../../models/parsed_receipt.dart';
+import '../../core/utils/encryption_util.dart';
 import './widgets/camera_overlay_widget.dart';
 import './widgets/capture_controls_widget.dart';
 import './widgets/ocr_results_bottom_sheet.dart';
@@ -32,6 +33,8 @@ class _OcrCameraScanState extends State<OcrCameraScan>
   XFile? _lastCapturedImage;
   late AnimationController _pulseAnimationController;
   late Animation<double> _pulseAnimation;
+  late AnimationController _scanAnimationController;
+  late Animation<double> _scanAnimation;
   final OcrService _ocrService = OcrService();
 
   ParsedReceipt? _lastParsedReceipt;
@@ -57,6 +60,13 @@ class _OcrCameraScanState extends State<OcrCameraScan>
       curve: Curves.easeInOut,
     ));
     _pulseAnimationController.repeat(reverse: true);
+
+    _scanAnimationController =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _scanAnimation = Tween<double>(begin: -1.0, end: 1.0).animate(
+      CurvedAnimation(parent: _scanAnimationController, curve: Curves.easeInOut),
+    );
+    _scanAnimationController.repeat(reverse: true);
   }
 
   void _simulateDocumentDetection() {
@@ -165,7 +175,16 @@ class _OcrCameraScanState extends State<OcrCameraScan>
       final path = await LocalStorageService.saveImage(File(_capturedImage!.path));
       donationData['imagePath'] = path;
     }
-    await DatabaseService.donationsBox.add(donationData);
+    final encrypted = {
+      'donorName': EncryptionUtil.encryptText(donationData['donorName'] ?? ''),
+      'amount': donationData['amount'],
+      'currency': donationData['currency'],
+      'date': donationData['date'],
+      'category': EncryptionUtil.encryptText(donationData['category'] ?? ''),
+      'notes': EncryptionUtil.encryptText(donationData['notes'] ?? ''),
+      'imagePath': donationData['imagePath'],
+    };
+    await DatabaseService.donationsBox.add(encrypted);
     Navigator.of(context).pop(); // Close bottom sheet
     Navigator.of(context).pop(); // Return to previous screen
 
@@ -207,6 +226,7 @@ class _OcrCameraScanState extends State<OcrCameraScan>
   void dispose() {
     _cameraController?.dispose();
     _pulseAnimationController.dispose();
+    _scanAnimationController.dispose();
     _ocrService.dispose();
     super.dispose();
   }
@@ -236,6 +256,7 @@ class _OcrCameraScanState extends State<OcrCameraScan>
             child: CameraOverlayWidget(
               isDocumentDetected: _isDocumentDetected,
               pulseAnimation: _pulseAnimation,
+              scanAnimation: _scanAnimation,
             ),
           ),
 
