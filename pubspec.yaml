@@ -28,6 +28,7 @@ dependencies:
   google_ml_kit: ^0.20.0
   csv: ^5.0.1
   excel: ^2.0.0
+  encrypt: ^5.0.1
   web: any
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import '../utils/encryption_util.dart';
 import 'database_service.dart';
 import 'sqlite_service.dart';
 
@@ -26,15 +27,17 @@ class AuthService {
 
   static Future<void> saveCredentials(String email, String password) async {
     final box = DatabaseService.authBox;
-    await box.put(_keyEmail, email);
-    await box.put(_keyPassword, password);
+    await box.put(_keyEmail, EncryptionUtil.encryptText(email));
+    await box.put(_keyPassword, EncryptionUtil.encryptText(password));
   }
 
   static Map<String, String?> getCredentials() {
     final box = DatabaseService.authBox;
+    final email = box.get(_keyEmail) as String?;
+    final password = box.get(_keyPassword) as String?;
     return {
-      'email': box.get(_keyEmail) as String?,
-      'password': box.get(_keyPassword) as String?,
+      'email': email != null ? EncryptionUtil.decryptText(email) : null,
+      'password': password != null ? EncryptionUtil.decryptText(password) : null,
     };
 
   }
