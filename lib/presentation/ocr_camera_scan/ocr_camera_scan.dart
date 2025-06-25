@@ -165,7 +165,8 @@ class _OcrCameraScanState extends State<OcrCameraScan>
       final path = await LocalStorageService.saveImage(File(_capturedImage!.path));
       donationData['imagePath'] = path;
     }
-    await DatabaseService.donationsBox.add(donationData);
+    donationData['amount'] = double.tryParse(donationData['amount'] ?? '0') ?? 0;
+    await DonationService.addDonation(donationData);
     Navigator.of(context).pop(); // Close bottom sheet
     Navigator.of(context).pop(); // Return to previous screen
 

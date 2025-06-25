@@ -21,64 +21,37 @@ class _DashboardHomeState extends State<DashboardHome>
   String _selectedCurrency = 'SAR';
   late TabController _tabController;
 
-  // Mock data for donations
-  final List<Map<String, dynamic>> _donationData = [
-    {
-      "id": 1,
-      "donorName": "Ahmed Al-Rashid",
-      "amount": 500.0,
-      "currency": "SAR",
-      "date": DateTime.now().subtract(Duration(days: 1)),
-      "category": "Zakat",
-    },
-    {
-      "id": 2,
-      "donorName": "Fatima Hassan",
-      "amount": 250.0,
-      "currency": "SAR",
-      "date": DateTime.now().subtract(Duration(days: 2)),
-      "category": "Sadaqah",
-    },
-    {
-      "id": 3,
-      "donorName": "Omar Abdullah",
-      "amount": 1000.0,
-      "currency": "SAR",
-      "date": DateTime.now().subtract(Duration(days: 3)),
-      "category": "Zakat",
-    },
-    {
-      "id": 4,
-      "donorName": "Aisha Mohamed",
-      "amount": 150.0,
-      "currency": "SAR",
-      "date": DateTime.now().subtract(Duration(days: 5)),
-      "category": "Sadaqah",
-    },
-    {
-      "id": 5,
-      "donorName": "Khalid Ibrahim",
-      "amount": 750.0,
-      "currency": "SAR",
-      "date": DateTime.now().subtract(Duration(days: 7)),
-      "category": "Zakat",
-    },
-  ];
-
-  final List<Map<String, dynamic>> _chartData = [
-    {"day": "Day 1", "amount": 500.0},
-    {"day": "Day 2", "amount": 750.0},
-    {"day": "Day 3", "amount": 1000.0},
-    {"day": "Day 4", "amount": 300.0},
-    {"day": "Day 5", "amount": 850.0},
-    {"day": "Day 6", "amount": 600.0},
-    {"day": "Day 7", "amount": 950.0},
-  ];
+  List<Map<String, dynamic>> _donationData = [];
+  List<Map<String, dynamic>> _chartData = [];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    _loadDonations();
+  }
+
+  Future<void> _loadDonations() async {
+    final data = await DonationService.getUserDonations();
+    setState(() {
+      _donationData = data
+          .map((d) => {
+                'id': d['id'],
+                'donorName': d['donor_name'],
+                'amount': d['amount'],
+                'currency': d['currency'] ?? 'SAR',
+                'date': DateTime.tryParse(d['date'] ?? '') ?? DateTime.now(),
+                'category': d['category'] ?? 'General',
+              })
+          .toList();
+
+      _chartData = _donationData
+          .map((e) => {
+                'day': e['date'].toString().split('T').first,
+                'amount': e['amount'],
+              })
+          .toList();
+    });
   }
 
   @override
@@ -125,8 +98,7 @@ class _DashboardHomeState extends State<DashboardHome>
   }
 
   Future<void> _refreshData() async {
-    await Future.delayed(Duration(seconds: 1));
-    setState(() {});
+    await _loadDonations();
   }
 
   void _onTabTapped(int index) {

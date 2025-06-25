@@ -31,7 +31,7 @@ class _DonationRecordsListState extends State<DonationRecordsList>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this, initialIndex: 1);
-    _loadMockData();
+    _loadData();
     _scrollController.addListener(_onScroll);
   }
 
@@ -43,76 +43,26 @@ class _DonationRecordsListState extends State<DonationRecordsList>
     super.dispose();
   }
 
-  void _loadMockData() {
-    _allRecords = [
-      {
-        "id": 1,
-        "donorName": "أحمد محمد علي",
-        "donorNameEn": "Ahmed Mohammed Ali",
-        "amount": 500.0,
-        "currency": "SAR",
-        "date": DateTime.now().subtract(Duration(days: 1)),
-        "category": "Zakat",
-        "categoryAr": "زكاة",
-        "notes": "Monthly zakat payment",
-        "receiptNumber": "ZK001",
-        "paymentMethod": "Cash"
-      },
-      {
-        "id": 2,
-        "donorName": "فاطمة أحمد",
-        "donorNameEn": "Fatima Ahmed",
-        "amount": 250.0,
-        "currency": "SAR",
-        "date": DateTime.now().subtract(Duration(days: 3)),
-        "category": "Sadaqah",
-        "categoryAr": "صدقة",
-        "notes": "General donation",
-        "receiptNumber": "SD002",
-        "paymentMethod": "Bank Transfer"
-      },
-      {
-        "id": 3,
-        "donorName": "محمد عبدالله",
-        "donorNameEn": "Mohammed Abdullah",
-        "amount": 1000.0,
-        "currency": "SAR",
-        "date": DateTime.now().subtract(Duration(days: 5)),
-        "category": "Mosque Fund",
-        "categoryAr": "صندوق المسجد",
-        "notes": "Mosque renovation fund",
-        "receiptNumber": "MF003",
-        "paymentMethod": "Cash"
-      },
-      {
-        "id": 4,
-        "donorName": "عائشة سالم",
-        "donorNameEn": "Aisha Salem",
-        "amount": 150.0,
-        "currency": "SAR",
-        "date": DateTime.now().subtract(Duration(days: 7)),
-        "category": "Orphan Support",
-        "categoryAr": "دعم الأيتام",
-        "notes": "Monthly orphan support",
-        "receiptNumber": "OS004",
-        "paymentMethod": "Credit Card"
-      },
-      {
-        "id": 5,
-        "donorName": "يوسف إبراهيم",
-        "donorNameEn": "Yusuf Ibrahim",
-        "amount": 750.0,
-        "currency": "SAR",
-        "date": DateTime.now().subtract(Duration(days: 10)),
-        "category": "Education Fund",
-        "categoryAr": "صندوق التعليم",
-        "notes": "Islamic education support",
-        "receiptNumber": "EF005",
-        "paymentMethod": "Bank Transfer"
-      },
-    ];
+  Future<void> _loadData() async {
+    final data = await DonationService.getUserDonations();
+    _allRecords = data
+        .map((d) => {
+              'id': d['id'],
+              'donorName': d['donor_name'],
+              'donorNameEn': d['donor_name'],
+              'amount': d['amount'],
+              'currency': d['currency'] ?? 'SAR',
+              'date': DateTime.tryParse(d['date'] ?? '') ?? DateTime.now(),
+              'category': d['category'] ?? 'General',
+              'categoryAr': d['category'] ?? 'General',
+              'notes': d['notes'] ?? '',
+              'receiptNumber': d['receipt_number'] ?? '',
+              'paymentMethod': d['payment_method'] ?? '',
+            })
+        .toList();
     _filteredRecords = List.from(_allRecords);
     _sortRecords();
+    setState(() {});
   }
 
   void _onScroll() {
@@ -145,8 +95,7 @@ class _DonationRecordsListState extends State<DonationRecordsList>
 
     HapticFeedback.lightImpact();
 
-    // Simulate refresh
-    await Future.delayed(Duration(seconds: 1));
+    await _loadData();
 
     if (mounted) {
       setState(() {
@@ -262,11 +211,10 @@ class _DonationRecordsListState extends State<DonationRecordsList>
                       child: Text('Cancel')),
                   TextButton(
                       onPressed: () {
+                        DonationService.deleteDonation(record['id']);
                         setState(() {
-                          _allRecords
-                              .removeWhere((r) => r['id'] == record['id']);
-                          _filteredRecords
-                              .removeWhere((r) => r['id'] == record['id']);
+                          _allRecords.removeWhere((r) => r['id'] == record['id']);
+                          _filteredRecords.removeWhere((r) => r['id'] == record['id']);
                         });
                         Navigator.pop(context);
                         HapticFeedback.heavyImpact();

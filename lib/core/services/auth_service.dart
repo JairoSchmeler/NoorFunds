@@ -38,4 +38,13 @@ class AuthService {
     };
 
   }
+
+  /// Returns the currently logged in user based on stored credentials.
+  static Future<Map<String, dynamic>?> getCurrentUser() async {
+    final creds = getCredentials();
+    if (creds['email'] != null && creds['password'] != null) {
+      return await SqliteService.getUser(creds['email']!, creds['password']!);
+    }
+    return null;
+  }
 }
